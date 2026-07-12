@@ -3,7 +3,7 @@ name: ShopKart Report
 on:
   push:
     branches:
-      - Salman_ShopKart_Assessment
+      -main
 
 permissions:
   contents: write
