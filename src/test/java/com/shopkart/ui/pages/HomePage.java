@@ -1,43 +1,98 @@
-// Package declaration for the home page object
 package com.shopkart.ui.pages;
 
-// Imports required for logging and Selenium locator support
-import com.shopkart.support.LoggerUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
+import com.codeborne.selenide.Condition;
+import com.shopkart.ui.locators.XP;
 
-// Page object for the home page
-public class HomePage extends BasePage {
+import static com.codeborne.selenide.Selenide.$x;
 
-    // Logger used for home page interactions
-    private static final Logger log = LoggerUtil.getLogger(HomePage.class);
+public class HomePage {
 
-    // Locator for the main page heading
-    private static final By HEADING = By.id("page-title");
 
-    // Locator for the catalog link on the home page
-    private static final By CATALOG = By.cssSelector("a[href='/catalog']");
+    public HomePage verifyHomePage() {
 
-    // Constructor that initializes the home page with the shared driver
-    public HomePage(WebDriver driver) {
-        super(driver);
+        $x(XP.SEARCH_BOX).shouldBe(Condition.visible);
+        $x(XP.CATALOG_BUTTON).shouldBe(Condition.visible);
+
+        return this;
     }
 
-    // Verifies that the home page heading is visible
-    public boolean isHeadingVisible() {
 
-        log.info("Verifying Home page heading is visible");
+    public HomePage searchProduct(String productName) {
 
-        return visible(HEADING).isDisplayed();
+        $x(XP.SEARCH_BOX)
+                .shouldBe(Condition.visible)
+                .clear();
+
+        $x(XP.SEARCH_BOX)
+                .setValue(productName);
+
+        $x(XP.SEARCH_)
+                .shouldBe(Condition.enabled)
+                .click();
+
+        return this;
     }
 
-    // Reads and returns the visible home page heading text
-    public String headingText() {
 
-        log.info("Reading Home page heading");
+    public HomePage verifyProductVisible(String productName) {
 
-        return text(HEADING);
+        XP.product(productName)
+                .shouldBe(Condition.visible);
+
+        return this;
+    }
+
+
+    public HomePage openProduct(String productName) {
+
+        $x(String.format(XP.PRODUCT, productName))
+                .shouldBe(Condition.visible)
+                .click();
+
+        return this;
+    }
+
+
+    public HomePage addProductToCart(String productName) {
+
+        XP.addToCart(productName)
+                .shouldBe(Condition.visible)
+                .click();
+
+        return this;
+    }
+
+    public CartPage openCart() {
+
+        $x(XP.CART_BUTTON)
+                .shouldBe(Condition.visible)
+                .click();
+
+        return new CartPage();
+    }
+
+
+    public HomePage openApiDocs() {
+
+        $x(XP.API_DOCS_LINK).shouldBe(Condition.visible).click();
+
+        return this;
+    }
+
+
+    public HomePage verifyLoggedInUser(String userName) {
+
+        $x(XP.LOGGED_IN_USER).shouldHave(Condition.text(userName));
+
+        return this;
+    }
+
+
+    public LoginPage signOut() {
+
+        $x(XP.SIGN_OUT_BUTTON).shouldBe(Condition.visible).click();
+
+        return new LoginPage();
     }
 
 }

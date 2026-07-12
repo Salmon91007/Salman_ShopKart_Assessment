@@ -1,50 +1,70 @@
-// Package declaration for the cart page object
 package com.shopkart.ui.pages;
 
-// Imports required for logging and Selenium selectors
-import com.shopkart.support.LoggerUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
+import com.codeborne.selenide.Condition;
+import com.shopkart.ui.locators.XP;
 
-// Page object for the shopping cart page
-public class CartPage extends BasePage {
+import static com.codeborne.selenide.Selenide.$x;
 
-    // Logger used for cart page actions
-    private static final Logger log = LoggerUtil.getLogger(CartPage.class);
+public class CartPage {
 
-    // Locator for each cart row item
-    private static final By CART_LINE =
-            By.cssSelector(".cart-row");
 
-    // Locator for the Proceed button
-    private static final By PROCEED =
-            By.cssSelector("button.button.primary");
+    public CartPage verifyCartPage() {
 
-    // Constructor that initializes the cart page with the shared driver
-    public CartPage(WebDriver driver) {
-        super(driver);
+        $x(XP.CART_HEADING).shouldBe(Condition.visible);
+
+        $x(XP.CART_CAPTION).shouldBe(Condition.visible);
+
+        $x(XP.CART_TOTAL).shouldBe(Condition.visible);
+
+        return this;
     }
 
-    // Returns the number of cart line items currently displayed
-    public int lineCount() {
 
-        int count = elements(CART_LINE).size();
+    public CartPage verifyProductInCart(String sku) {
 
-        log.info("Cart contains {} item(s)", count);
-
-        return count;
+        XP.cartLine(sku).shouldBe(Condition.visible);
+        return this;
     }
 
-    // Proceeds to the checkout page by clicking the proceed button
-    public CheckoutPage proceed() {
 
-        log.info("Proceeding to Checkout");
+    public CartPage verifyLineTotal(String sku, String expectedAmount) {
 
-        click(PROCEED);
+        XP.cartLine(sku).$x(XP.LINE_TOTAL).shouldHave(Condition.text(expectedAmount));
+        return this;
+    }
 
-        log.info("Navigated to Checkout page");
 
-        return new CheckoutPage(driver);
+    public String getLineTotal(String sku) {
+        return XP.cartLine(sku).$x(XP.LINE_TOTAL).shouldBe(Condition.visible).getText();
+    }
+
+
+    public CartPage verifyCartTotal(String expectedTotal) {
+
+        $x(XP.CART_TOTAL).shouldHave(Condition.text(expectedTotal));
+
+        return this;
+    }
+
+
+    public String getCartTotal() {
+
+        return $x(XP.CART_TOTAL).shouldBe(Condition.visible).getText();
+    }
+
+
+    public HomePage continueShopping() {
+
+        $x(XP.CONTINUE_SHOPPING).shouldBe(Condition.enabled).click();
+
+        return new HomePage();
+    }
+
+
+    public CheckoutPage clickCheckout() {
+
+        $x(XP.CHECKOUT).shouldBe(Condition.enabled).click();
+
+        return new CheckoutPage();
     }
 }

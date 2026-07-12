@@ -41,9 +41,20 @@ dependencies {
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.platform:junit-platform-suite")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+
+    //REST Assured
+    testImplementation("io.rest-assured:rest-assured:5.5.6")
+    testImplementation("io.rest-assured:json-schema-validator:5.5.6")
+
+
+    // Jackson
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+    // Assertions
+    testImplementation("org.assertj:assertj-core:3.27.6")
 
     // Cucumber
-    testImplementation("io.cucumber:cucumber-java")
+    testImplementation("io.cucumber:cucumber-java:7.20.1")
     testImplementation("io.cucumber:cucumber-junit-platform-engine")
     testImplementation("io.cucumber:cucumber-picocontainer")
 
@@ -57,9 +68,8 @@ dependencies {
     testImplementation("org.slf4j:slf4j-simple:$slf4jVersion")
 
     // Database
-    testImplementation("org.flywaydb:flyway-core:$flywayVersion")
-    testImplementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
-    testImplementation("org.postgresql:postgresql:$postgresqlVersion")
+    testImplementation("io.github.cdimascio:java-dotenv:5.2.2")
+    testImplementation("com.mysql:mysql-connector-j:9.3.0")
 
     // Testcontainers
     testImplementation("org.testcontainers:testcontainers-junit-jupiter:$testcontainersVersion")
@@ -120,61 +130,34 @@ fun Test.useProjectTestClasses() {
 }
 
 
-tasks.test {
+val testSourceSet = sourceSets.test.get()
 
-    description = "Runs all Selenium UI regression tests."
+fun Test.configureTestTask() {
 
-    group = "verification"
+    testClassesDirs = testSourceSet.output.classesDirs
+    classpath = testSourceSet.runtimeClasspath
 
-    include(
-        "**/PlaceOrderE2ETest.class",
-        "**/CartTotalTest.class"
+    useJUnitPlatform()
+
+    systemProperty(
+        "cucumber.plugin",
+        "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
     )
-
-    maxParallelForks = 1
 }
 
 
-val e2eTest by tasks.registering(Test::class) {
 
-    description = "Runs the complete End-to-End purchase workflow."
+val apiTest by tasks.registering(Test::class) {
 
-    group = "verification"
-
-    useProjectTestClasses()
-
-    include("**/PlaceOrderE2ETest.class")
-
-    maxParallelForks = 1
-}
-
-
-val functionalTest by tasks.registering(Test::class) {
-
-    description = "Runs functional UI validation tests."
+    description = "Runs all API tests"
 
     group = "verification"
 
-    useProjectTestClasses()
-
-    include("**/CartTotalTest.class")
-
-    maxParallelForks = 1
-}
-
-
-val parallelStructureTest by tasks.registering(Test::class) {
-
-    description = "Demonstrates Gradle parallel execution."
-
-    group = "verification"
+    useJUnitPlatform()
 
     useProjectTestClasses()
 
-    include("**/CartTotalTest.class")
-
-    maxParallelForks =
-        Runtime.getRuntime().availableProcessors().coerceAtMost(2)
+    include("**/*ApiTest.class")
 }
 
 
@@ -192,19 +175,121 @@ val integrationTest by tasks.registering(Test::class) {
 }
 
 
-val cucumberSmoke by tasks.registering(Test::class) {
+val cucumberTest by tasks.registering(Test::class) {
 
-    description = "Runs Cucumber smoke scenarios."
+    description = "Runs Cucumber Scenarios"
 
     group = "verification"
+
+    useJUnitPlatform()
 
     useProjectTestClasses()
 
     include("**/RunCucumberTest.class")
+}
+
+// Smoke
+
+val smoke by tasks.registering(Test::class) {
+
+    description = "Runs Smoke scenarios"
+
+    group = "verification"
+
+    configureTestTask()
 
     systemProperty("cucumber.filter.tags", "@smoke")
+}
 
-    maxParallelForks = 1
+// API
+
+val api by tasks.registering(Test::class) {
+
+    description = "Runs API scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@api")
+}
+
+// UI
+
+val ui by tasks.registering(Test::class) {
+
+    description = "Runs UI scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@ui")
+}
+
+// Database
+
+val db by tasks.registering(Test::class) {
+
+    description = "Runs Database scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@db")
+}
+
+// Negative
+
+val negative by tasks.registering(Test::class) {
+
+    description = "Runs Negative scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@negative")
+}
+
+// Security
+
+val security by tasks.registering(Test::class) {
+
+    description = "Runs Security scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@security")
+}
+
+// E2E
+
+val e2e by tasks.registering(Test::class) {
+
+    description = "Runs End-to-End scenarios"
+
+    group = "verification"
+
+    configureTestTask()
+
+    systemProperty("cucumber.filter.tags", "@e2e")
+}
+
+// Reporting
+
+val reporting by tasks.registering(Test::class) {
+
+    description = "Runs Reporting framework tests"
+
+    group = "verification"
+
+    configureTestTask()
+
+    include("**/ReportingConfigurationTest.class")
 }
 
 tasks.register("projectBuildSummary") {
@@ -249,5 +334,22 @@ tasks.register("projectBuildSummary") {
                 ========================================================
             """.trimIndent()
         )
+    }
+
+    allure {
+
+        version.set("2.34.1")
+
+        adapter {
+
+            aspectjWeaver.set(true)
+
+            frameworks {
+
+                junit5 {
+                    adapterVersion.set("2.34.1")
+                }
+            }
+        }
     }
 }

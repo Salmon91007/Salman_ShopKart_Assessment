@@ -1,36 +1,17 @@
-name: Order Repository CI
+name: ShopKart Report
 
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - Salman_ShopKart_Assessment
 
 permissions:
   contents: write
 
 jobs:
-  order-test:
+  allure-report:
 
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:16
-
-        env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-
-        ports:
-          - 5432:5432
-
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
 
@@ -44,27 +25,22 @@ jobs:
         with:
           distribution: temurin
           java-version: 22
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Make Gradle Wrapper Executable
-        run: chmod +x gradlew
+      - name: Check Gradle
+        run: gradle -v
 
-      - name: Run Order Test
-        run: ./gradlew integrationTest --no-configuration-cache
-        env:
-          JAVA_TOOL_OPTIONS: >
-            -Ddb.url=jdbc:postgresql://localhost:5432/testdb
-            -Ddb.user=postgres
-            -Ddb.password=postgres
-
+      - name: Run Reporting Tests
+        run: gradle reporting --no-configuration-cache
 
       - name: Copy Allure Environment
         if: always()
         run: |
           mkdir -p build/allure-results
-          cp src/test/resources/features/environment.properties\
+          cp src/test/resources/environment.properties \
              build/allure-results/environment.properties
 
       - name: Checkout gh-pages branch
@@ -83,7 +59,7 @@ jobs:
           gh_pages: gh-pages
           allure_history: allure-history
 
-      - name: Deploy report to GitHub Pages
+      - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:

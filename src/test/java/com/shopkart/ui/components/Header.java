@@ -1,88 +1,69 @@
 package com.shopkart.ui.components;
 
-import com.shopkart.ui.pages.*;
-import com.shopkart.support.LoggerUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
+import com.codeborne.selenide.Condition;
+import com.shopkart.ui.locators.XP;
+import com.shopkart.ui.pages.CartPage;
+import com.shopkart.ui.pages.HomePage;
+import com.shopkart.ui.pages.LoginPage;
 
-public class Header extends BasePage {
+import static com.codeborne.selenide.Selenide.$x;
 
-    private static final Logger log = LoggerUtil.getLogger(Header.class);
+public class Header {
 
-    private static final By HOME = By.linkText("Home");
-    private static final By PROFILE = By.linkText("Profile");
-    private static final By PRODUCTS = By.linkText("Products");
-    private static final By CART = By.cssSelector("[data-test='cart-icon']");
-    private static final By CHECKOUT = By.linkText("Checkout");
-    private static final By ORDERS = By.linkText("Orders");
-    private static final By USER_NAME = By.cssSelector("[aria-label='Signed in user'] span");
+    public Header verifyHeader() {
 
-    public Header(WebDriver driver) {
-        super(driver);
+        $x(XP.CATALOG_BUTTON).shouldBe(Condition.visible);
+        $x(XP.CART_BUTTON).shouldBe(Condition.visible);
+        $x(XP.API_DOCS_LINK).shouldBe(Condition.visible);
+        $x(XP.LOGGED_IN_USER).shouldBe(Condition.visible);
+        $x(XP.SIGN_OUT_BUTTON).shouldBe(Condition.visible);
+
+        return this;
     }
 
-    public CartBadge cartBadge() {
 
-        log.info("Accessing cart badge");
+    public HomePage goToCatalog() {
 
-        return new CartBadge(wait);
+        $x(XP.CATALOG_BUTTON).shouldBe(Condition.enabled).click();
+
+        return new HomePage();
     }
 
-    public CartPage openCart() {
 
-        log.info("Opening Cart page");
+    public CartPage goToCart() {
 
-        click(CART);
+        $x(XP.CART_BUTTON).shouldBe(Condition.enabled).click();
 
-        return new CartPage(driver);
+        return new CartPage();
     }
 
-    public HomePage openHome() {
 
-        log.info("Navigating to Home page");
+    public Header openApiDocs() {
 
-        click(HOME);
+        $x(XP.API_DOCS_LINK).shouldBe(Condition.enabled).click();
 
-        return new HomePage(driver);
+        return this;
     }
 
-    public void openProfile() {
 
-        log.info("Opening Profile page");
+    public Header verifyLoggedInUser(String expectedUser) {
 
-        click(PROFILE);
+        $x(XP.LOGGED_IN_USER).shouldHave(Condition.exactText(expectedUser));
+
+        return this;
     }
 
-    public CatalogPage openProducts() {
 
-        log.info("Opening Products page");
+    public String getLoggedInUser() {
 
-        click(PRODUCTS);
-
-        return new CatalogPage(driver);
+        return $x(XP.LOGGED_IN_USER).shouldBe(Condition.visible).getText();
     }
 
-    public void openOrders() {
 
-        log.info("Opening Orders page");
+    public LoginPage signOut() {
 
-        click(ORDERS);
-    }
+        $x(XP.SIGN_OUT_BUTTON).shouldBe(Condition.enabled).click();
 
-    public CheckoutPage checkoutPage() {
-
-        log.info("Navigating to Checkout page");
-
-        click(CHECKOUT);
-
-        return new CheckoutPage(driver);
-    }
-
-    public String userName() {
-
-        log.info("Reading signed-in user name");
-
-        return text(USER_NAME);
+        return new LoginPage();
     }
 }
