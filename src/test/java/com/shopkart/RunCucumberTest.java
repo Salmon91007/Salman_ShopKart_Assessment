@@ -28,10 +28,10 @@ import org.junit.platform.suite.api.Suite;
                         "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
 )
 
-@ConfigurationParameter(
-        key = FILTER_TAGS_PROPERTY_NAME,
-        value = "@smoke"
-)
+//@ConfigurationParameter(
+//        key = FILTER_TAGS_PROPERTY_NAME,
+//        value = "@smoke"
+//)
 
 public class RunCucumberTest {
 }

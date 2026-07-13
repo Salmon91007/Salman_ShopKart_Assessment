@@ -86,9 +86,7 @@ public final class Secrets {
         );
     }
 
-    // =====================================================
     // Application URLs
-    // =====================================================
 
     public static String baseUrl() {
         return get("BASE_URL");
@@ -98,9 +96,8 @@ public final class Secrets {
         return get("API_BASE_URL");
     }
 
-    // =====================================================
+
     // Server Configuration
-    // =====================================================
 
     public static int port() {
         return Integer.parseInt(get("PORT"));
@@ -110,9 +107,8 @@ public final class Secrets {
         return Integer.parseInt(get("DB_CONNECTION_TIMEOUT_MS"));
     }
 
-    // =====================================================
-    // JWT Secret (if required)
-    // =====================================================
+
+    // JWT Secret
 
     public static String tokenSecret() {
         return get("SHOPKART_TOKEN_SECRET");

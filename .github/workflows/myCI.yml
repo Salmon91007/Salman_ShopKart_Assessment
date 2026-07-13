@@ -34,7 +34,7 @@ jobs:
         run: gradle -v
 
       - name: Run Reporting Tests
-        run: gradle reporting --no-configuration-cache
+        run: gradle cucumberTest --no-configuration-cache
 
       - name: Copy Allure Environment
         if: always()
