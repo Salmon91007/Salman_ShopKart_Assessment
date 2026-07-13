@@ -1,0 +1,8 @@
+"BROKEN","EPIC","FAILED","FEATURE","PASSED","SKIPPED","STORY","UNKNOWN"
+"1","","0","Customer Login","0","0","Alice logs into ShopKart successfully","0"
+"1","","0","Cancel Order","0","0","Cancel a placed order once","0"
+"1","","0","Out of stock validation","0","0","Customer cannot add quantity greater than stock","0"
+"1","","0","Orders are visible only to their owner","0","0","Another customer cannot read someone else's order","0"
+"1","","0","Checkout places an order and the backend agrees","0","0","Alice logs in and successfully purchases an Insulated Bottle","0"
+"1","","0","Product Search","0","0","Customer searches for a product successfully","0"
+"1","","0","Cart totals","0","0","Cart total equals quantity multiplied by price","0"

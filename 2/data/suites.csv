@@ -1,0 +1,10 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"  As a registered ShopKart customer
+  I want to log into the application
+  So that I can access the product catalog and my shopping cart","197","Alice logs into ShopKart successfully","","2026-07-13","broken","2026-07-13","","Customer Login","Alice logs into ShopKart successfully",""
+"","1698","Cancel a placed order once","","2026-07-13","broken","2026-07-13","","Cancel Order","Cancel a placed order once",""
+"","13","Customer cannot add quantity greater than stock","","2026-07-13","broken","2026-07-13","","Out of stock validation","Customer cannot add quantity greater than stock",""
+"","15","Another customer cannot read someone else's order","","2026-07-13","broken","2026-07-13","","Orders are visible only to their owner","Another customer cannot read someone else's order",""
+"","4958","Alice logs in and successfully purchases an Insulated Bottle","","2026-07-13","broken","2026-07-13","","Checkout places an order and the backend agrees","Alice logs in and successfully purchases an Insulated Bottle",""
+"","242","Customer searches for a product successfully","","2026-07-13","broken","2026-07-13","","Product Search","Customer searches for a product successfully",""
+"","22","Cart total equals quantity multiplied by price","","2026-07-13","broken","2026-07-13","","Cart totals","Cart total equals quantity multiplied by price",""
